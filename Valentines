@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Letter</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #ffe6ec;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  /* Envelope */
+  .envelope {
+    width: 300px;
+    height: 200px;
+    background: #ffb6c1;
+    position: relative;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 1s;
+  }
+
+  .flap {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff9fb2;
+    clip-path: polygon(0 0, 100% 0, 50% 50%);
+    transform-origin: top;
+    transition: transform 1s;
+  }
+
+  .heart {
+    position: absolute;
+    top: 80px;
+    left: 130px;
+    font-size: 40px;
+    color: red;
+    pointer-events: none;
+  }
+
+  .envelope.open .flap {
+    transform: rotateX(180deg);
+  }
+
+  /* Letter */
+  .letter {
+    display: none;
+    width: 400px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .boxes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .box {
+    height: 50px;
+    border: 2px solid #ff6f91;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+    background: #ffe6ec;
+  }
+
+  /* Popup poem */
+  .popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  .final {
+    margin-top: 20px;
+    font-size: 22px;
+    color: #ff3366;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="envelope" id="envelope">
+  <div class="flap"></div>
+  <div class="heart">❤️</div>
+</div>
+
+<div class="letter" id="letter">
+  <h2>💌 Open Me 💌</h2>
+  <div class="boxes">
+    <div class="box" data-word="Will">?</div>
+    <div class="box" data-word="you">?</div>
+    <div class="box" data-word="be">?</div>
+    <div class="box" data-word="my">?</div>
+    <div class="box" data-word="valentines">?</div>
+  </div>
+  <div class="final" id="finalText">
+    Will you be my valentines ❤️
+  </div>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <p id="poemText"></p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+<script>
+  const envelope = document.getElementById("envelope");
+  const letter = document.getElementById("letter");
+  const popup = document.getElementById("popup");
+  const poemText = document.getElementById("poemText");
+  const finalText = document.getElementById("finalText");
+  const boxes = document.querySelectorAll(".box");
+
+  const poems = {
+    Will: "Will is choosing you again, even on quiet days.",
+    you: "You are the reason this feels brave.",
+    be: "To be is to stay, without fear.",
+    my: "My means I care in a soft way.",
+    valentines: "Valentines is choosing one heart."
+  };
+
+  envelope.onclick = () => {
+    envelope.classList.add("open");
+    setTimeout(() => {
+      envelope.style.display = "none";
+      letter.style.display = "block";
+    }, 1000);
+  };
+
+  boxes.forEach(box => {
+    box.onclick = () => {
+      if (box.textContent !== "?") return;
+      poemText.textContent = poems[box.dataset.word];
+      popup.style.display = "flex";
+      box.dataset.opened = "true";
+    };
+  });
+
+  function closePopup() {
+    popup.style.display = "none";
+    boxes.forEach(box => {
+      if (box.dataset.opened === "true" && box.textContent === "?") {
+        box.textContent = box.dataset.word;
+      }
+    });
+
+    if ([...boxes].every(b => b.textContent !== "?")) {
+      finalText.style.display = "block";
+    }
+  }
+</script>
+
+</body>
+</html>
